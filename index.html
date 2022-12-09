@@ -9,10 +9,6 @@
 	<link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link href="vendor/toastr/toastr.min.css" rel="stylesheet" type="text/css">
 	<link href="vendor/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css">
-	<link href="vendor/fancybox/jquery.fancybox.min.css" rel="stylesheet">
-	<link href="vendor/owl.carousel/owl.carousel.min.css" rel="stylesheet">
-    <link href="vendor/owl.carousel/owl.theme.default.min.css" rel="stylesheet">
-	<link href="vendor/pullToRefresh/style.css" rel="stylesheet">
 	
 	<style>
 		.scrollbar::-webkit-scrollbar-track{
@@ -47,7 +43,7 @@
                             </div>
                             
                             <div class="col-6 col-lg-3" style="padding: 0px 10px 10px 10px;">
-                                <button type="button" id="data_load" class="btn btn-primary btn-sm" style="width: 100%; height: 100%;">Импорт из облака</button>
+                                <button type="button" id="data_load" class="btn btn-primary btn-sm" style="width: 100%; height: 100%;">Синхронизация</button>
                             </div>
                             
                             <div class="col-6 col-lg-3" style="padding: 0px 10px 10px 10px;">
@@ -64,10 +60,9 @@
             <br>
             <div class="col-12">
                 <div class="card card-custom gutter-b form_sign_in">
-                    <div class="card-body" id="data-container">
-                        <div class="form-group" style="margin-bottom: 0; height: 100%;">
-                            <textarea class="form-control scrollbar" id="user_data" style="height: 100%; resize: none; overflow-y: scroll;"></textarea>
-                        </div>
+                    <div class="card-body">
+						<button type="button" id="add_card" class="btn btn-primary btn-sm">Добавить карточку</button>
+                        <div id="data-container"></div>
                     </div>
                 </div>
             </div>
@@ -156,31 +151,71 @@
                     <h5 class="modal-title" id="exampleModalLabel">Ключ дешифровки</h5>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label>Ключ дешифровки</label>
-                        <input type="text" id="set_key" class="form-control">
-                    </div>
-					<br>
+					<label>Ключ дешифровки</label>
+					<div class="input-group mb-3">
+						<input type="text" class="form-control" id="set_key">
+						<button class="btn btn-outline-primary" type="button" id="set_key_btn">Сохранить</button>
+					</div>
                     <p>Для того, чтобы надёжно сохранить ваши данные необходим ключ дешифровки. Он хранится на вашем устройстве и никуда не передается.</p>
                     <p>Если вы используете Open Keeper впервые - просто придмайте любую фразу или слово в качестве ключа дешифровки.</p>
                     <p>Если вы уже использовали Open Keeper - укажите ключ дешифровки, который был установлен ранее.</p>
                     <p>Обязательно запомните ваш ключ дешифровки - без него вы не сможете получить доступ к вашим данным!</p>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" id="set_key_btn" class="btn btn-primary font-weight-bold">Сохранить</button>
+            </div>
+        </div>
+    </div>
+	
+	
+	<div class="modal fade" data-keyboard="false" data-backdrop="static" id="modal_key_update" tabindex="-1" role="dialog" style="padding: 20px">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Изменение ключа дешифровки</h5>
+                </div>
+                <div class="modal-body">
+					<p>Вы пытаетесь изменить ключ дешифровки. В процессе изменения ключа, все ваши карточки будут зашифрованы заново с помощью нового ключа.</p>
+					<p>Обратите внимание, что после запуска остановить процесс обновления зашифрованных данных будет невозможно. Убедитесь в стабильном интернет-соединении и дождитесь завершения процесса.</p>
+					<label>Новый ключ дешифровки</label>
+					<div class="input-group mb-3">
+						<input type="text" class="form-control" id="set_new_key">
+						<button class="btn btn-outline-primary" type="button" id="set_new_key_btn">Сохранить</button>
+					</div>
                 </div>
             </div>
+        </div>
+    </div>
+	
+	
+	<div class="modal fade" id="modal_card" tabindex="-1" role="dialog" style="padding: 20px">
+        <div class="modal-dialog modal-lg" role="document">
+			<form id="f_card">
+            <div class="modal-content">
+                <div class="modal-body">
+					<input type="hidden" id="f_card_uuid">
+                    <div class="form-group">
+                        <label>Название</label>
+                        <input type="text" id="f_card_name" class="form-control">
+                    </div>
+					<br>
+					<div class="form-group">
+                        <label>Содержимое</label>
+                        <textarea class="form-control" id="f_card_content" rows="6"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+					<button type="button" class="btn btn-danger btn_card_delete">Удалить</button>
+                    <button type="submit" class="btn btn-primary font-weight-bold">Сохранить</button>
+                </div>
+            </div>
+			</form>
         </div>
     </div>
 
 	<script src="cordova.js"></script>
 	<script src="vendor/jquery/jquery-2.2.4.min.js"></script>
 	<script src="assets/js/bootstrap.bundle.min.js"></script>
-	<script src="vendor/sweetalert2/sweetalert2.all.min.js"></script>
-	<script src="vendor/fancybox/jquery.fancybox.min.js"></script>  
-	<script src="vendor/owl.carousel/owl.carousel.min.js"></script>
-	<script src="vendor/pullToRefresh/animates.js"></script>
-	<script src="vendor/pullToRefresh/pullToRefresh.js"></script>
+	<script src="vendor/sweetalert2/sweetalert2.all.min.js"></script>>
 	<script src="vendor/toastr/toastr.min.js"></script>
 	<script src="vendor/cryptojs/aes.js"></script>
 	<script src="vendor/cryptojs/pbkdf2.js"></script>
